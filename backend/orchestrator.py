@@ -74,8 +74,13 @@ def run_orchestrator():
         filename = f"runs/video_{uuid.uuid4().hex}.mp4"
 
         print(f"[Orchestrator] Created video: {filename}")
+# 2️⃣ Upload to Wasabi
+        youtube_url = upload_to_youtube(
+    video_path=local_video_path,
+    title="AI Generated Video",
+    description="Created automatically using Faceless AI SaaS"
+)
 
-        # 2️⃣ Upload to Wasabi
         s3_client.put_object(
             Bucket=WASABI_BUCKET,
             Key=filename,
@@ -94,10 +99,13 @@ def run_orchestrator():
 
         print("[Orchestrator] Posted to X and YouTube")
 
-        return {
-            "status": "ok",
-            "wasabi_key": filename,
-            "youtube_response": yt_response
+       return {
+    "status": "ok",
+    "wasabi_key": filename,
+    "file_url": file_url,
+    "youtube_response": yt_response
+}
+
         }
 
     except Exception as e:
